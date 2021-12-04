@@ -26,3 +26,25 @@ input UpdateTodoInput {
 input UserInput {
   name: String!
 }
+
+enum TodoStatus {
+  done
+  pending
+}
+
+type Todo {
+  id: Int
+  createdAt: Date
+  updatedAt: Date
+  title: String
+  description: String
+  status: TodoStatus!
+  user: User
+  userId: String
+}
+
+type User {
+  id: String
+  name: String
+  todoList: [Todo]
+}
