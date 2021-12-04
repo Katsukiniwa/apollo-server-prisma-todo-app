@@ -1,21 +1,21 @@
-import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
-import { loadSchemaSync } from '@graphql-tools/load';
-import { addResolversToSchema } from '@graphql-tools/schema';
-import { ApolloServer } from 'apollo-server';
-import { join } from 'path';
+import { GraphQLFileLoader } from "@graphql-tools/graphql-file-loader";
+import { loadSchemaSync } from "@graphql-tools/load";
+import { addResolversToSchema } from "@graphql-tools/schema";
+import { ApolloServer } from "apollo-server";
+import { join } from "path";
 
-const schema = loadSchemaSync(join(__dirname, '../schema.graphql'), {
+const schema = loadSchemaSync(join(__dirname, "../schema.graphql"), {
   loaders: [new GraphQLFileLoader()],
 });
 
 const books = [
   {
-    title: 'The Awakening',
-    author: 'Kate Chopin',
+    title: "The Awakening",
+    author: "Kate Chopin",
   },
   {
-    title: 'City of Glass',
-    author: 'Paul Auster',
+    title: "City of Glass",
+    author: "Paul Auster",
   },
 ];
 
