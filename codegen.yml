@@ -6,6 +6,8 @@ generates:
       useIndexSignature: true
       # リゾルバーのためのContextの型をsrc/types/context.d.tsから読み込む
       contextType: ../context#Context
+      # GraphQLのスキーマ上でenumで定義されていても吐き出されるTypeScriptの型をstringのUnionにする
+      enumsAsTypes: true
     plugins:
       - typescript
       - typescript-resolvers
