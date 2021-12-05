@@ -1,33 +1,93 @@
-import { GraphQLFileLoader } from "@graphql-tools/graphql-file-loader";
-import { loadSchemaSync } from "@graphql-tools/load";
-import { addResolversToSchema } from "@graphql-tools/schema";
-import { ApolloServer } from "apollo-server";
-import { join } from "path";
+import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
+import { loadSchemaSync } from '@graphql-tools/load';
+import { addResolversToSchema } from '@graphql-tools/schema';
+import { ApolloServer } from 'apollo-server';
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import jwksClient from 'jwks-rsa';
+import fetch from 'node-fetch';
+import { join } from 'path';
+import {
+  APOLLO_SERVER_PORT,
+  AUTH0_AUDIENCE,
+  AUTH0_DOMAIN,
+} from './config/constants';
+import resolvers from './resolvers';
+import { Context } from './types/context';
 
-const schema = loadSchemaSync(join(__dirname, "../schema.graphql"), {
+const schema = loadSchemaSync(join(__dirname, '../schema.graphql'), {
   loaders: [new GraphQLFileLoader()],
 });
-
-const books = [
-  {
-    title: "The Awakening",
-    author: "Kate Chopin",
-  },
-  {
-    title: "City of Glass",
-    author: "Paul Auster",
-  },
-];
-
-const resolvers = {
-  Query: {
-    books: () => books,
-  },
-};
-
 const schemaWithResolvers = addResolversToSchema({ schema, resolvers });
-const server = new ApolloServer({ schema: schemaWithResolvers });
+const server = new ApolloServer({
+  schema: schemaWithResolvers,
+  cors: true,
+  context: async (ctx) => {
+    const token = ctx.req.headers.authorization?.replace('Bearer ', '');
+    if (token === undefined) {
+      return {
+        user: undefined,
+      };
+    }
 
-server.listen().then(({ url }) => {
+    try {
+      // const user = await new Promise<JwtPayload>((resolve, reject) => {
+      //   const client = jwksClient({
+      //     jwksUri: `${AUTH0_DOMAIN}/.well-known/jwks.json`,
+      //   });
+      //   jwt.verify(
+      //     token,
+      //     (header, cb) => {
+      //       client.getSigningKey(header.kid, function (err, key) {
+      //         const signingKey = key.getPublicKey();
+      //         cb(null, signingKey);
+      //       });
+      //     },
+      //     {
+      //       audience: `${AUTH0_AUDIENCE}`,
+      //       issuer: `${AUTH0_DOMAIN}/`,
+      //       algorithms: ['RS256'],
+      //     },
+      //     (err, decoded) => {
+      //       if (err) {
+      //         console.error(err)
+      //         return reject(err);
+      //       }
+      //       if (decoded === undefined) {
+      //         console.error('decoded is invalid.')
+      //         return reject('decoded is invalid.');
+      //       }
+      //       resolve(decoded);
+      //     }
+      //   );
+      // });
+
+      const userInfo = await fetch(`${AUTH0_DOMAIN}/userinfo`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((res: any) => res.json());
+
+      console.log('============')
+      console.log(userInfo)
+      console.log('============')
+
+      return {
+        user: {
+          id: userInfo.sub, // user.sub
+          name: userInfo.nickname,
+          email: userInfo.email,
+        },
+      } as Context;
+    } catch (error) {
+      return {
+        user: undefined,
+      };
+    }
+  },
+});
+
+server.listen({ port: APOLLO_SERVER_PORT }).then(({ url }) => {
   console.log(`🚀  Server ready at ${url}`);
 });
