@@ -18,7 +18,11 @@
     "@graphql-tools/schema": "^8.3.1",
     "@prisma/client": "3.6.0",
     "apollo-server": "^3.1.1",
+    "dotenv": "^10.0.0",
     "graphql": "^15.5.1",
+    "jsonwebtoken": "^8.5.1",
+    "jwks-rsa": "^2.0.5",
+    "node-fetch": "^2.6.1",
     "prisma": "3.6.0"
   },
   "devDependencies": {
@@ -26,6 +30,9 @@
     "@graphql-codegen/typescript": "^2.4.1",
     "@graphql-codegen/typescript-resolvers": "^2.4.2",
     "@types/eslint": "^8.2.0",
+    "@types/jsonwebtoken": "^8.5.6",
+    "@types/node": "^16.4.8",
+    "@types/node-fetch": "^2.5.12",
     "@types/prettier": "^2.4.2",
     "@typescript-eslint/eslint-plugin": "^4.28.5",
     "@typescript-eslint/parser": "^4.28.5",
