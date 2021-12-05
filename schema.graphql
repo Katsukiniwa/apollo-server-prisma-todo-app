@@ -1,26 +1,24 @@
 type Query {
   getUser: User
-  getTodoList: [Todo]!
+  getTodos: [Todo!]!
   getTodoById(id: Int!): Todo
 }
 
 type Mutation {
-  addTodo(input: AddTodoInput): Todo
-  updateTodo(id: Int, input: UpdateTodoInput): Todo
-  deleteTodo(id: Int): Todo
-  createUser(id: String, input: UserInput): User
-  updateUser(id: String, input: UserInput): User
+  addTodo(input: AddTodoInput!): Todo
+  updateTodo(id: Int!, input: UpdateTodoInput!): Todo
+  deleteTodo(id: Int!): Todo
+  createUser(id: String!, input: UserInput!): User
+  updateUser(id: String!, input: UserInput!): User
 }
 
 input AddTodoInput {
   title: String!
-  description: String
 }
 
 input UpdateTodoInput {
-  title: String
-  description: String
-  status: TodoStatus
+  title: String!
+  status: TodoStatus!
 }
 
 input UserInput {
@@ -33,20 +31,19 @@ enum TodoStatus {
 }
 
 type Todo {
-  id: Int
+  id: Int!
   createdAt: Date
   updatedAt: Date
-  title: String
-  description: String
+  title: String!
   status: TodoStatus!
   user: User
-  userId: String
+  userId: String!
 }
 
 type User {
   id: String
   name: String
-  todoList: [Todo]
+  todos: [Todo]
 }
 
 scalar Date
