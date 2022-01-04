@@ -7,8 +7,6 @@ export const getUser: QueryResolvers['getUser'] = async (
   context,
   info
 ) => {
-  console.log('called getUser')
-  console.log(context)
   const user = await prisma.user.findUnique({
     where: {
       id: context.user?.id,

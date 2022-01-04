@@ -19,7 +19,5 @@ export const getTodos: QueryResolvers['getTodos'] = async (
       user: true,
     },
   });
-  console.log(context.user)
-  console.log(todos.length)
   return todos;
 };
